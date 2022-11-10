@@ -21,5 +21,6 @@ module.exports = function (eleventyConfig) {
             layouts: "_layouts",
         },
         passthroughFileCopy: true,
+        pathPrefix: "/auto-gis-with-rust-blog/"
     }
 };
