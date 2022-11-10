@@ -1,0 +1,25 @@
+a[role="button"] {
+    text-decoration: none;
+}
+
+button {
+    border: none;
+    background-color: transparent;
+    font-family: inherit;
+    padding: 0;
+    cursor: pointer;
+
+    @media screen and (-ms-high-contrast: active) {
+        border: 2px solid currentcolor;
+    }
+
+    &.site-nav--item--link {
+        padding: 1em 2em;
+
+        &::before {
+            content: attr(data-marker);
+            padding-right: .5em;
+
+        }
+    }
+}

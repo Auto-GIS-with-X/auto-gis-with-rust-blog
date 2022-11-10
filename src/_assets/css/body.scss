@@ -1,0 +1,11 @@
+@import "colours.scss";
+
+.site-body {
+    background: $light-yellow-color;
+    color: $black-color;
+}
+
+.page-body {
+    width: min(90vw, 40rem);
+    margin: 0 auto;
+}

@@ -1,0 +1,37 @@
+{
+  "name": "auto-gis-with-rust-blog",
+  "version": "1.0.0",
+  "description": "A blog to document AutoGIS with Rust",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "targets": {
+    "default": {
+      "distDir": "./docs"
+    }
+  },
+  "scripts": {
+    "start": "npm-run-all --parallel dev:*",
+    "dev:eleventy": "ELEVENTY_ENV=development npx eleventy --serve",
+    "dev:parcel": "parcel watch src/_assets/css/main.scss src/_assets/js/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Auto-GIS-with-X/auto-gis-with-rust-blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Auto-GIS-with-X/auto-gis-with-rust-blog/issues"
+  },
+  "homepage": "https://github.com/Auto-GIS-with-X/auto-gis-with-rust-blog#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^1.0.2",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^4.1.0",
+    "@parcel/transformer-sass": "^2.7.0",
+    "markdown-it": "^13.0.1",
+    "markdown-it-attrs": "^4.1.4",
+    "npm-run-all": "^4.1.5",
+    "parcel": "^2.7.0",
+    "sass": "^1.55.0"
+  }
+}

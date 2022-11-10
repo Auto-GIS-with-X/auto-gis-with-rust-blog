@@ -1,0 +1,10 @@
+{% extends "./base.html" %}
+{% block content %}
+{% include "site-header.html" %}
+<main class="page-body">
+    <article>
+        <h1>{{ title }}</h1>
+        {{ content | safe }}
+    </article>
+</main>
+{% endblock %}
