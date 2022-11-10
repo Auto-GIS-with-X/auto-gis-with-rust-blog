@@ -6,7 +6,7 @@
     </button>
     <ul id="site-nav-items" class="site-nav__items" role="menu" aria-labelledby="hamburger-button">
         <li class="site-nav__item" role="none"><a class="site-nav__link" role="menuitem"
-                href="/autogis-problems/introduction/">Introduction</a>
+                href="{{ '/autogis-problems/introduction/' | url }}">Introduction</a>
         </li>
         <li class="site-nav__item" role="none">
             <button type="button" class="site-nav__link dropdown__button" id="problems-dropdown-button"
@@ -17,7 +17,7 @@
             <ul id="problems-dropdown-items" class="dropdown__items" role="menu"
                 aria-labelledby="problems-dropdown-button">
                 <li class="dropdown__item" role="none"><a class="dropdown__link" role="menuitem"
-                        href="/autogis-problems/problem-1/">1: Creating basic geometries</a>
+                        href="{{ '/autogis-problems/problem-1/' | url }}">1: Creating basic geometries</a>
                 </li>
             </ul>
         </li>
