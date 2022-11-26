@@ -125,3 +125,7 @@ pre>code[class*=language-diff] .token.inserted:not(.prefix) {
     color: inherit;
     display: block
 }
+
+p>code {
+    padding-right: 0.5ch;
+}
