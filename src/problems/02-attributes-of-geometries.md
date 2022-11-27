@@ -1,6 +1,9 @@
 ---
-title: "Problem 2: Attributes of geometries"
-layout: 'home.html'
+title: "2: Attributes of geometries"
+eleventyNavigation:
+  key: "2: Attributes of geometries"
+  parent: Problems
+  order: 1
 ---
 
 Okay, next problem. Let's have a look at the question:

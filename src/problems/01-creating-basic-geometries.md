@@ -1,6 +1,9 @@
 ---
-title: "Problem 1: Creating basic geometries"
-layout: 'home.html'
+title: "1: Creating basic geometries"
+eleventyNavigation:
+  key: "1: Creating basic geometries"
+  parent: Problems
+  order: 0
 ---
 
 ## Part 1: Creating points

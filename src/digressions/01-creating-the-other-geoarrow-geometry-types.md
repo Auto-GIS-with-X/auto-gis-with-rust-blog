@@ -1,6 +1,9 @@
 ---
-title: "Digression 1: The Other GeoArrow Types"
-layout: 'home.html'
+title: "1: Creating the other GeoArrow geometry types"
+eleventyNavigation:
+  key: "1: Creating the other GeoArrow geometry types"
+  parent: Digressions
+  order: 0
 ---
 
 To complete [Problem 1](/autogis-problems/problem-1.md) we had to define types to represent points, line strings, and polygons but the [GeoArrow spec](https://github.com/geoarrow/geoarrow/blob/main/format.md) also collections of those geometries in the form of `MultiPoint`, `MultiLineString`, and `MultiPolygon`. Let's define those too!
