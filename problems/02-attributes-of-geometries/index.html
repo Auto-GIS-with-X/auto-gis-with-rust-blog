@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/auto-gis-with-rust-blog/css/main.css">
+    <title></title>
+</head>
+
+<body class="site-body">
+    
+<header class="site-header">
+    <div class="site-header__content">
+        <h1 class="site-title">
+            <a href="/auto-gis-with-rust-blog/" class="site-title__text">AutoGIS with Rust</a>
+        </h1>
+        <nav class="site-nav">
+    <button type="button" class="hamburger" id="hamburger-button" aria-haspopup="true" aria-controls="site-nav-items">
+        <div class="hamburger__top-row"></div>
+        <div class="hamburger__middle-row"></div>
+        <div class="hamburger__bottom-row"></div>
+    </button>
+    <ul id="site-nav-items" class="site-nav__items" role="menu" aria-labelledby="hamburger-button">
+        <li class="site-nav__item" role="none">
+            <button type="button" class="site-nav__link dropdown__button" id="problems-dropdown-button"
+                aria-haspopup="true" aria-controls="problems-dropdown-items">
+                <span>Problems</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="dropdown__expand"
+                    id="problems-dropdown-expand">
+                    <path d="m24 30.75-12-12 2.15-2.15L24 26.5l9.85-9.85L36 18.8Z" />
+                </svg>
+            </button>
+            <ul id="problems-dropdown-items" class="dropdown__items" role="menu"
+                aria-labelledby="problems-dropdown-button">
+                <li class="dropdown__item" role="none">
+                    <a class="dropdown__link" role="menuitem" href="/auto-gis-with-rust-blog/problems/01-creating-basic-geometries/">1: Creating basic geometries</a>
+                </li>
+                
+                <li class="dropdown__item" role="none">
+                    <a class="dropdown__link" role="menuitem" href="/auto-gis-with-rust-blog/problems/02-attributes-of-geometries/">2: Attributes of geometries</a>
+                </li>
+                </ul>
+        </li><li class="site-nav__item" role="none">
+            <button type="button" class="site-nav__link dropdown__button" id="digressions-dropdown-button"
+                aria-haspopup="true" aria-controls="digressions-dropdown-items">
+                <span>Digressions</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="dropdown__expand"
+                    id="digressions-dropdown-expand">
+                    <path d="m24 30.75-12-12 2.15-2.15L24 26.5l9.85-9.85L36 18.8Z" />
+                </svg>
+            </button>
+            <ul id="digressions-dropdown-items" class="dropdown__items" role="menu"
+                aria-labelledby="digressions-dropdown-button">
+                <li class="dropdown__item" role="none">
+                    <a class="dropdown__link" role="menuitem" href="/auto-gis-with-rust-blog/digressions/01-creating-the-other-geoarrow-geometry-types/">1: Creating the other GeoArrow geometry types</a>
+                </li>
+                
+                <li class="dropdown__item" role="none">
+                    <a class="dropdown__link" role="menuitem" href="/auto-gis-with-rust-blog/digressions/02-continuous-integration-continuous-deployment/">2: Continuous integration / Continuous deployment</a>
+                </li>
+                </ul>
+        </li></ul>
+</nav>
+    </div>
+</header>
+<main class="page-body">
+    <article>
+        <h1>2: Attributes of geometries</h1>
+        <p>Okay, next problem. Let's have a look at the question:</p>
+<blockquote>
+<p>1: Create a function called <code>centroid()</code> that has one parameter called <code>geom</code>. The function should take any kind of Shapely's geometric-object as an input, and return a centroid of that geometry. In addition, you should take care that the function is used as it should:</p>
+<ul>
+<li>Inside the function, you should first check with assert - functionality that the input is a Shapely Point, LineString or Polygon geometry (see lesson 6 from the Geo-Python course and hints for help). If something else than a list is passed for the function, you should return an Error message: &quot;Input should be a Shapely geometry!&quot;</li>
+</ul>
+</blockquote>
+<p>In essence, we need:</p>
+<ul>
+<li>A function, which only operates on valid geometry objects, that returns the centroid of a given geometry.</li>
+</ul>
+<p>Sounds like we need a <code>geometry</code>trait. To paraphrase the chapter about traits in <a href="https://doc.rust-lang.org/book/ch10-02-traits.html">The Book</a>, a trait allows us to define shared functionality.</p>
+<pre class="language-rust"><code class="language-rust"><span class="token comment">// geometry.rs</span><br><br><span class="token keyword">use</span> <span class="token keyword">crate</span><span class="token module-declaration namespace"><span class="token punctuation">::</span>point<span class="token punctuation">::</span></span><span class="token class-name">Point</span><span class="token punctuation">;</span><br><br><span class="token keyword">pub</span> <span class="token keyword">trait</span> <span class="token type-definition class-name">Geometry</span> <span class="token punctuation">{</span><br>    <span class="token keyword">fn</span> <span class="token function-definition function">get_centroid</span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">self</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">Point</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<p>Now we need to implement this trait for our geometry objects.</p>
+<h2>Compute the centroid of a <code>Point</code></h2>
+<p>First of all, the centre point of a point is the point itself, so this should be easy. We just need to import the <code>Geometry</code> trait and the implement it for our <code>Point</code> type.</p>
+<pre class="language-diff-rust"><code class="language-diff-rust">// point.rs<br><br><span class="token inserted-sign inserted language-rust"><span class="token prefix inserted">+</span><span class="token keyword">use</span> <span class="token keyword">crate</span><span class="token module-declaration namespace"><span class="token punctuation">::</span>geometry<span class="token punctuation">::</span></span><span class="token class-name">Geometry</span><span class="token punctuation">;</span><br></span>use num_traits::{self, NumCast};<br><br>#[derive(Debug, PartialEq, PartialOrd)]<br><br>...<br><br><span class="token inserted-sign inserted language-rust"><span class="token prefix inserted">+</span><span class="token keyword">impl</span> <span class="token class-name">Geometry</span> <span class="token keyword">for</span> <span class="token class-name">Point</span> <span class="token punctuation">{</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// Compute the geometric center of a geometry.</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// For a `Point`, this is a reference to the `Point` itself.</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// ```</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// use auto_gis_with_rust::point::Point;</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// let point = Point::new(0.0, 1.0);</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// assert_eq!(point.centroid(), &amp;point);</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// ```</span><br><span class="token prefix inserted">+</span>    <span class="token keyword">fn</span> <span class="token function-definition function">centroid</span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">self</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token operator">&amp;</span><span class="token class-name">Point</span> <span class="token punctuation">{</span><br><span class="token prefix inserted">+</span>        <span class="token keyword">self</span><br><span class="token prefix inserted">+</span>    <span class="token punctuation">}</span><br><span class="token prefix inserted">+</span><span class="token punctuation">}</span></code></pre>
+<p>Right, let's run the Doctest.</p>
+<pre class="language-sh"><code class="language-sh">error<span class="token punctuation">[</span>E0599<span class="token punctuation">]</span>: no method named <span class="token variable"><span class="token variable">`</span>centroid<span class="token variable">`</span></span> found <span class="token keyword">for</span> struct <span class="token variable"><span class="token variable">`</span>Point<span class="token variable">`</span></span> <span class="token keyword">in</span> the current scope<br> --<span class="token operator">></span> src/point.rs:39:18<br>  <span class="token operator">|</span><br><span class="token number">8</span> <span class="token operator">|</span> assert_eq<span class="token operator">!</span><span class="token punctuation">(</span>point.centroid<span class="token punctuation">(</span><span class="token punctuation">)</span>, <span class="token operator">&amp;</span>point<span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token operator">|</span>                  ^^^^^^^^ method not found <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span>Point<span class="token variable">`</span></span><br>  <span class="token operator">|</span><br> ::: /home/ed/repos/auto-gis-with-rust/src/geometry.rs:4:8<br>  <span class="token operator">|</span><br><span class="token number">4</span> <span class="token operator">|</span>     fn centroid<span class="token punctuation">(</span><span class="token operator">&amp;</span>self<span class="token punctuation">)</span> -<span class="token operator">></span> <span class="token operator">&amp;</span>Point<span class="token punctuation">;</span><br>  <span class="token operator">|</span>        -------- the method is available <span class="token keyword">for</span> <span class="token variable"><span class="token variable">`</span>Point<span class="token variable">`</span></span> here<br>  <span class="token operator">|</span><br>  <span class="token operator">=</span> help: items from traits can only be used <span class="token keyword">if</span> the trait is <span class="token keyword">in</span> scope<br>help: the following trait is implemented but not <span class="token keyword">in</span> scope<span class="token punctuation">;</span> perhaps <span class="token function">add</span> a <span class="token variable"><span class="token variable">`</span>use<span class="token variable">`</span></span> <span class="token keyword">for</span> it:<br>  <span class="token operator">|</span><br><span class="token number">2</span> <span class="token operator">|</span> use crate::auto_gis_with_rust::geometry::Geometry<span class="token punctuation">;</span><br>  <span class="token operator">|</span></code></pre>
+<p>Oh dear, we forgot to import the trait object in the Doctest. Let's fix that.</p>
+<pre class="language-diff-rust"><code class="language-diff-rust">// point.rs<br><br><span class="token unchanged language-rust"><span class="token prefix unchanged"> </span>   <span class="token comment">/// ```</span><br></span><span class="token inserted-sign inserted language-rust"><span class="token prefix inserted">+</span>    <span class="token comment">/// use auto_gis_with_rust::geometry::Geometry;</span><br></span><span class="token unchanged language-rust"><span class="token prefix unchanged"> </span>   <span class="token comment">/// use auto_gis_with_rust::point::Point;</span></code></pre>
+<p>Try again.</p>
+<pre class="language-sh"><code class="language-sh">running <span class="token number">1</span> <span class="token builtin class-name">test</span><br><span class="token builtin class-name">test</span> src/point.rs - point::Point::centroid <span class="token punctuation">(</span>line <span class="token number">34</span><span class="token punctuation">)</span> <span class="token punctuation">..</span>. ok<br><br><span class="token builtin class-name">test</span> result: ok. <span class="token number">1</span> passed<span class="token punctuation">;</span> <span class="token number">0</span> failed<span class="token punctuation">;</span> <span class="token number">0</span> ignored<span class="token punctuation">;</span> <span class="token number">0</span> measured<span class="token punctuation">;</span> <span class="token number">5</span> filtered out<span class="token punctuation">;</span> finished <span class="token keyword">in</span> <span class="token number">0</span>.36s</code></pre>
+<p>Boom!</p>
+<h2>Compute the centroid of a <code>LineString</code></h2>
+<p>Okay, this is a little more complicated. Let's approach this iteratively.</p>
+<p>The centroid of the most simple <code>LineString</code>, a line between two points, is the mid-point between those end-points. This most simple <code>LineString</code> is called a <code>LineSegment</code>, so let's define a <code>LineSegment</code> type.</p>
+<pre class="language-diff-rust"><code class="language-diff-rust">// line_string.rs<br><br>...<br><br>use crate::error::GeometryError;<br>use crate::helpers;<br><br><span class="token inserted-sign inserted language-rust"><span class="token prefix inserted">+</span><span class="token attribute attr-name">#[derive(Debug, PartialEq, PartialOrd)]</span><br><span class="token prefix inserted">+</span><span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">LineSegment</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">f64</span><span class="token punctuation">;</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token prefix inserted">+</span><br><span class="token prefix inserted">+</span><span class="token keyword">impl</span> <span class="token class-name">LineSegment</span> <span class="token punctuation">{</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// A straight line connecting two points.</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// # Examples:</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// Construct a new `LineSegment` from a 2-element array of 2-element arrays.</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// ```</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// use auto_gis_with_rust::line_string::LineSegment;</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// let line_segment_1 = LineSegment::new([[0., 0.], [1., 1.]]);</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// let line_segment_2 = LineSegment::new([[0, 0], [1, 1]]);</span><br><span class="token prefix inserted">+</span>    <span class="token comment">///</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// assert_eq!(line_segment_1, line_segment_2)</span><br><span class="token prefix inserted">+</span>    <span class="token comment">/// ```</span><br><span class="token prefix inserted">+</span>    <span class="token keyword">pub</span> <span class="token keyword">fn</span> <span class="token function-definition function">new</span><span class="token operator">&lt;</span><span class="token class-name">T</span><span class="token punctuation">:</span> <span class="token class-name">NumCast</span><span class="token operator">></span><span class="token punctuation">(</span>coordinates<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token class-name">T</span><span class="token punctuation">;</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token keyword">Self</span> <span class="token punctuation">{</span><br><span class="token prefix inserted">+</span>        <span class="token keyword">let</span> float_coordinates<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">f64</span><span class="token punctuation">;</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> coordinates<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token closure-params"><span class="token closure-punctuation punctuation">|</span>coordinate<span class="token closure-punctuation punctuation">|</span></span> <span class="token punctuation">{</span><br><span class="token prefix inserted">+</span>            coordinate<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token closure-params"><span class="token closure-punctuation punctuation">|</span>coordinate<span class="token closure-punctuation punctuation">|</span></span> <span class="token punctuation">-></span> <span class="token keyword">f64</span> <span class="token punctuation">{</span> <span class="token namespace">num_traits<span class="token punctuation">::</span></span><span class="token function">cast</span><span class="token punctuation">(</span>coordinate<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">unwrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><br><span class="token prefix inserted">+</span>        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token prefix inserted">+</span>        <span class="token class-name">LineSegment</span><span class="token punctuation">(</span>float_coordinates<span class="token punctuation">)</span><br><span class="token prefix inserted">+</span>    <span class="token punctuation">}</span><br><span class="token prefix inserted">+</span><span class="token punctuation">}</span><br></span><br>#[derive(Debug, PartialEq, PartialOrd)]<br>pub struct LineString(Vec&lt;[f64; 2]>);<br>...</code></pre>
+
+    </article>
+</main>
+
+    <script src="/auto-gis-with-rust-blog/js/index.js"></script>
+</body>
+
+</html>
